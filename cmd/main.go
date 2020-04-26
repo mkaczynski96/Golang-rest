@@ -29,7 +29,7 @@ func createArticle(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewDecoder(r.Body).Decode(&newArticle)
 	newArticle.Id = string(len(articles))
 	articles = append(articles, newArticle)
-	json.NewEncoder(w).Encode(newArticle)
+	_ = json.NewEncoder(w).Encode(newArticle)
 }
 
 func getArticle(w http.ResponseWriter, r *http.Request) {
@@ -37,11 +37,11 @@ func getArticle(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	for _, val := range articles {
 		if val.Id == params["id"] {
-			json.NewEncoder(w).Encode(val)
+			_ = json.NewEncoder(w).Encode(val)
 			return
 		}
 	}
-	json.NewEncoder(w).Encode(&model.Article{})
+	_ = json.NewEncoder(w).Encode(&model.Article{})
 }
 
 func updateArticle(w http.ResponseWriter, r *http.Request) {
@@ -54,7 +54,7 @@ func updateArticle(w http.ResponseWriter, r *http.Request) {
 			_ = json.NewDecoder(r.Body).Decode(&updateArticle)
 			updateArticle.Id = params["id"]
 			articles = append(articles, updateArticle)
-			json.NewEncoder(w).Encode(updateArticle)
+			_ = json.NewEncoder(w).Encode(updateArticle)
 			return
 		}
 	}
@@ -69,7 +69,7 @@ func deleteArticle(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	json.NewEncoder(w).Encode(articles)
+	_ = json.NewEncoder(w).Encode(articles)
 }
 
 func initialData() ([]model.Article, error) {
