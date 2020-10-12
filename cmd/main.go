@@ -7,7 +7,10 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	_ "os"
 	"time"
+
+	"github.com/rs/cors"
 )
 
 const (
@@ -87,6 +90,12 @@ func initialData() ([]model.Article, error) {
 }
 
 func runApi() (string, error) {
+
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"}, // All origins
+		AllowedMethods: []string{"GET"}, // Allowing only get, just an example
+	})
+
 	muxRouter := mux.NewRouter()
 
 	initData, errInitData := initialData()
@@ -101,7 +110,9 @@ func runApi() (string, error) {
 		muxRouter.HandleFunc(apiPath+"/updateArticle/{id}", updateArticle).Methods("PUT")
 		muxRouter.HandleFunc(apiPath+"/deleteArticle/{id}", deleteArticle).Methods("DELETE")
 
-		log.Fatal(http.ListenAndServe(":8001", muxRouter))
+		// start server listen
+		// with error handling
+		log.Fatal(http.ListenAndServe(":8001", c.Handler(muxRouter)))
 		return "healthy!", nil
 	}
 }
